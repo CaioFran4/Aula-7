@@ -52,20 +52,142 @@ chamados = [
 ]
 
 def pesquisar_usuario():
-    
-    pergunta = input("Que usuario você procura?: ")
+    print("===== PESQUISAR POR USUARIOS =====")
+    pergunta = input("Que usuario você procura?: ").lower() .strip()
 
     for chamado in chamados:
-        if chamado ["usuario"] == pergunta:
-            print(chamados)
+        if chamado["usuario"].lower() == pergunta:
+            
+            print(f"ID:{chamado['id']} | Titulo: {chamado['titulo']} | Prioridade: {chamado['prioridade']} | Status: {chamado['status']} | Usuario: {chamado['usuario']}")
             
 
 def pesquisar_prioridade():
-
-    pergunta = input("Por qual prioridade você está procurando?: ")
+    print("===== PESQUISAR POR PRIORIDADES =====")
+    pergunta = input("Por qual prioridade você está procurando?: (Crítica, Alta, Média, Baixa) ").lower() .strip()
 
     for chamado in chamados:
-        if chamado["Prioridade"]
+        if chamado["prioridade"].lower() == pergunta:
+            print (f"ID: {chamado['id']} | Titulo: {chamado['titulo']} | Prioridade: {chamado['prioridade']}")
+
+def pesquisar_status():
+    print("===== PESQUISANDO STATUS =====")
+    pergunta = input("Por qual Status você está procurando?: (Aberto, Em Progresso, Fechado) ").lower() .strip()
+
+    for chamado in chamados:
+        if chamado["status"].lower() == pergunta:
+            print (f"ID: {chamado['id']} | Titulo: {chamado['titulo']} | Status: {chamado['status']}")
+    
+def pesquisar_urgentes():
+    print("===== CHAMADAS URGENTES =====")
+    for chamado in chamados:
+        if chamado ["status"] == "Aberto" and chamado ["prioridade"] == "Crítica":
+            print(f"ID: {chamado['id']} | Titulo: {chamado['titulo']} | Usuario: {chamado['usuario']} | Prioridade: {chamado['prioridade']} | Status: {chamado['status']}")
+ 
+def adicionar_chamado():
+    print("===== ADICIONAR CHAMADA =====")
+    pergunta_titulo = input("Qual chamada você gostaria de adicionar?: ")
+    pergunta_prioridade = input("Qual a prioridade da adicionar?: ")
+    pergunta_usuario = input("Qual o usuario?: ")
+    novo_id = chamados[-1]['id'] + 1 if chamados else 1
+
+    cadastrar = {
+        "id": novo_id,
+        "titulo": pergunta_titulo,
+        "prioridade": pergunta_prioridade,
+        "status": "Aberto",
+        "usuario": pergunta_usuario
+    }
+    chamados.append(cadastrar)
+    print(chamados)
+
+def resolver_chamada():
+    while True:
+        print("===== CHAMADOS EM ANDAMENTO (EM PROGRESSO) =====")
+        chamados_em_progresso = False
+
+        for chamado in chamados:
+            if chamado['status'].lower() == "em progresso":
+                print(f"Chamados Em Progresso: {chamado['titulo']} | {chamado['status']} Usuario: {chamado['usuario']}")
+                chamados_em_progresso = True
+        if not chamados_em_progresso:
+            print("Não tem Nenhum chamado 'Em progresso' no momento").lower() .strip()
+            print("Retornando ao Menu...")
+            break
+
+        pergunta = input("\nQual usuário você gostaria de resolver a chamada?: ").lower().strip()
+        encontrado = False
+        
+
+        for chamado in chamados:
+            if chamado['usuario'].lower() == pergunta and chamado['status'].lower() == "em progresso":
+                chamado['status'] = "Fechado"
+                print(f"-> O Chamado {chamado['id']} ('{chamado['titulo']}') ('{chamado['usuario']}) alterado para Fechado!")
+                encontrado = True
+                
+        if not encontrado:
+            print(f"Nenhum chamado 'Em progresso' foi encontrado para o usuário '{pergunta}'.")
+        
+        
+        continuar = input("\nGostaria de resolver chamados de mais algum usuário? (sim/não): ").lower().strip()
+        
+        if continuar == "não" or continuar == "nao":
+            print("Saindo da resolução de chamados...")
+            break
+
+def fechar_chamada():
+    while True:
+
+        print("\n===== CHAMADOS ABERTOS =====")
+        tem_abertos = False
+        for chamado in chamados:
+            if chamado["status"].lower() == "aberto":
+                print(f"ID: {chamado['id']} | Usuário: {chamado['usuario']} | Título: {chamado['titulo']} | Prioridade: {chamado['prioridade']} | Status: {chamado['status']}")
+                tem_abertos = True
+        
+        if not tem_abertos:
+            print("Não há nenhum chamado 'Aberto' no momento.")
+            print("Retornando ao menu principal...")
+            break
+        print("==============================")
+
+       
+        pergunta_id = input("\nQual o ID do chamado que você deseja fechar?: ").strip()
+        
+
+        if not pergunta_id.isdigit():
+            print("Por favor, digite um número de ID válido.")
+            continue
+            
+        id_busca = float(pergunta_id)
+        encontrado = False
+
+
+        for chamado in chamados:
+            if chamado["id"] == id_busca:
+                encontrado = True
+                if chamado["status"].lower() == "fechado":
+                    print(f"O chamado ID {id_busca} já está Fechado!")
+                else:
+                    chamado["status"] = "Fechado"
+                    print(f"-> Sucesso! Chamado ID {id_busca} alterado para Fechado.")
+                break
+        
+        if not encontrado:
+            print(f"Nenhum chamado com o ID {id_busca} foi encontrado.")
+
+
+        continuar = input("\nGostaria de fechar mais algum chamado? (sim/não): ").lower().strip()
+        if continuar in ["não", "nao"]:
+            print("Voltando ao Menu")
+            break
+        
+
+
+
+
+        
+            
+
 
 
 
@@ -76,14 +198,34 @@ while True:
     print("2 - Pequisar por Prioridade")
     print("3 - Pequisar por Status")
     print("4 - Chamadas urgentes (Critica e Abertos)")
-    print("5 - Abrir Chamado ")
+    print("5 - Adicionar Chamado ")
     print("6 - Resolver Chamada")
     print("7 - Fechar chamada")
+    print("0 - Sair")
 
     opcao = input("Qual opção você deseja?: ")
 
     if opcao == "1":
         pesquisar_usuario()
 
-    if opcao == "2":
+    elif opcao == "2":
         pesquisar_prioridade()
+   
+    elif opcao == "3":
+        pesquisar_status()
+    
+    elif opcao == "4":
+        pesquisar_urgentes()
+
+    elif opcao == "5":
+        adicionar_chamado()
+    
+    elif opcao == "6":
+        resolver_chamada()
+
+    elif opcao == "7":
+        fechar_chamada()
+
+    elif opcao == "0":
+        print("==== Saindo do Sistema.... ====")
+        break
